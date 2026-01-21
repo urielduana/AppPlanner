@@ -24,3 +24,10 @@ export class UsersService {
     return this.prisma.user.create({ data });
   }
 }
+
+/**
+ * `UsersService` provides CRUD operations for managing users.
+ * It uses `PrismaService` to interact with the database.
+ * The service includes methods to find users by ID or email and to create new users.
+ * This service is essential for user management within the application.
+ */

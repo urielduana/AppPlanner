@@ -87,3 +87,10 @@ export class TasksService {
     });
   }
 }
+
+/**
+ * `TasksService` provides CRUD operations for managing tasks.
+ * It uses `PrismaService` to interact with the database.
+ * The service includes methods to find, create, update, toggle completion, and delete tasks.
+ * All operations are scoped to a specific user to ensure data privacy.
+ */
