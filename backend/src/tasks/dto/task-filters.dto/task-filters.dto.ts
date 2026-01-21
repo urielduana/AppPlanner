@@ -3,7 +3,7 @@ import { IsOptional, IsBoolean, IsString, IsDateString } from 'class-validator';
 export class TaskFiltersDto {
   @IsOptional()
   @IsBoolean()
-  status?: boolean;
+  completed?: boolean;
 
   @IsOptional()
   @IsString()

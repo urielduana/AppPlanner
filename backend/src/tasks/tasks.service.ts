@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Task } from 'src/generated/prisma/browser';
-import { Prisma } from 'src/generated/prisma/client';
+import { Prisma, Task } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
+import { CreateTaskDto } from './dto/task-filters.dto/create-task.dto';
 
 @Injectable()
 export class TasksService {
@@ -17,7 +17,7 @@ export class TasksService {
   findAll(
     userId: number,
     filters?: {
-      status?: boolean;
+      completed?: boolean;
       category?: string;
       search?: string;
       dueDate?: string;
@@ -26,7 +26,7 @@ export class TasksService {
     return this.prisma.task.findMany({
       where: {
         userId,
-        completed: filters?.status,
+        completed: filters?.completed,
         category: filters?.category,
         OR: filters?.search
           ? [
@@ -49,11 +49,17 @@ export class TasksService {
   // Create a new task for a specific user
   // The userId is required to associate the task with the user
   // The task data is provided in the data parameter
-  create(userId: number, data: Prisma.TaskCreateInput): Promise<Task> {
+  create(userId: number, dto: CreateTaskDto) {
     return this.prisma.task.create({
       data: {
-        ...data,
-        user: { connect: { id: userId } },
+        title: dto.title,
+        description: dto.description,
+        completed: dto.completed ?? false,
+        category: dto.category,
+        dueDate: dto.dueDate ? new Date(dto.dueDate) : undefined,
+        user: {
+          connect: { id: userId },
+        },
       },
     });
   }
