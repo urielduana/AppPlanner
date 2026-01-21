@@ -31,12 +31,12 @@ export const useAuthStore = defineStore("auth", {
 
         // Making a POST request to the login endpoint
         const response = await axios.post(
-          `${config.public.apiBaseUrl}/auth/login`,
+          `${config.public.apiBase}/auth/login`,
           { email, password },
         );
 
         //  Extracting the token from the response to ensure type safety
-        const token = response.data.token;
+        const token = response.data.access_token;
 
         // Storing the token and user information in the state
         this.token = response.data.token;
