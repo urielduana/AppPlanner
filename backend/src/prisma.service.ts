@@ -9,3 +9,9 @@ export class PrismaService extends PrismaClient {
     super({ adapter });
   }
 }
+/**
+ * `PrismaService` extends `PrismaClient` to provide database access throughout the application.
+ *
+ * It is marked with `@Injectable()` so it can be injected into other classes.
+ *
+ */

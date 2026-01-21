@@ -8,3 +8,13 @@ import { UsersModule } from './users/users.module';
   providers: [],
 })
 export class AppModule {}
+
+/**
+ * `AppModule` is the root module of the application.
+ * It imports other modules, defines controllers, and sets up providers.
+ *
+ * The `imports` array includes:
+ * - `PrismaModule`: Provides and exports `PrismaService` for database interactions.
+ * - `UsersModule`: Manages user-related functionalities.
+ *
+ */
