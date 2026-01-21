@@ -9,13 +9,17 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { TasksService } from './tasks.service';
-import { TaskFiltersDto } from './dto/task-filters.dto/task-filters.dto';
+import { AuthGuard } from '@nestjs/passport';
+import type { AuthRequest } from 'src/auth/auth-request.interface';
 import { CreateTaskDto } from './dto/task-filters.dto/create-task.dto';
-import { UpdateTaskDto } from './dto/task-filters.dto/update-task.dto';
 import { ToggleTaskDto } from './dto/task-filters.dto/toggle-task.dto';
+import { UpdateTaskDto } from './dto/task-filters.dto/update-task.dto';
+import { TasksService } from './tasks.service';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('tasks')
 export class TasksController {
   // Dependency injection of TasksService
@@ -32,11 +36,8 @@ export class TasksController {
 
   //   READ
   @Get()
-  getTasks(
-    @Query('userId', ParseIntPipe) userId: number,
-    @Query() filters: TaskFiltersDto,
-  ) {
-    return this.tasks.findAll(userId, filters);
+  getTasks(@Req() req: AuthRequest) {
+    return this.tasks.findAll(req.user.userId);
   }
 
   //   UPDATE
