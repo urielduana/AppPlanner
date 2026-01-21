@@ -2,6 +2,10 @@
 import { ref } from "vue";
 import { useAuthStore } from "~/stores/auth";
 
+definePageMeta({
+  middleware: "guest",
+});
+
 const config = useRuntimeConfig();
 console.log(config.public.apiBase);
 
