@@ -15,3 +15,10 @@ export class AuthController {
     return this.auth.login(body.email, body.password);
   }
 }
+/**
+ * Authentication Controller
+ *
+ * This controller handles incoming HTTP requests related to authentication.
+ * It exposes endpoints for user registration and login, delegating the business logic
+ * to the `AuthService`.
+ */
