@@ -8,7 +8,6 @@ import {
   Patch,
   Post,
   Put,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -25,41 +24,42 @@ export class TasksController {
   // Dependency injection of TasksService
   constructor(private tasks: TasksService) {}
 
-  //   CREATE
+  //   CREATE - AUTHENTICATED
   @Post()
-  createTask(
-    @Query('userId', ParseIntPipe) userId: number,
-    @Body() dto: CreateTaskDto,
-  ) {
-    return this.tasks.create(userId, dto);
+  createTask(@Req() req: AuthRequest, @Body() dto: CreateTaskDto) {
+    return this.tasks.create(req.user.userId, dto);
   }
 
-  //   READ
+  //   READ - AUTHENTICATED
   @Get()
   getTasks(@Req() req: AuthRequest) {
     return this.tasks.findAll(req.user.userId);
   }
 
-  //   UPDATE
+  //   UPDATE - AUTHENTICATED
   @Put(':id')
   updateTask(
+    @Req() req: AuthRequest,
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTaskDto,
   ) {
-    return this.tasks.update(id, dto);
+    return this.tasks.update(req.user.userId, id, dto);
   }
 
-  //   PATCH
+  //   PATCH - AUTHENTICATED
   @Patch(':id/complete')
-  // If API toggles fails probaly is missing @Body('completed') completed: boolean
-  toggle(@Param('id', ParseIntPipe) id: number, @Body() dto: ToggleTaskDto) {
-    return this.tasks.toggleComplete(id, dto.completed);
+  toggle(
+    @Req() req: AuthRequest,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: ToggleTaskDto,
+  ) {
+    return this.tasks.toggleComplete(req.user.userId, id, dto.completed);
   }
 
   //   DELETE
   @Delete(':id')
-  deleteTask(@Param('id', ParseIntPipe) id: number) {
-    return this.tasks.delete(id);
+  deleteTask(@Req() req: AuthRequest, @Param('id', ParseIntPipe) id: number) {
+    return this.tasks.delete(req.user.userId, id);
   }
 }
 

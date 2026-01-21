@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Prisma, Task } from 'src/generated/prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { CreateTaskDto } from './dto/task-filters.dto/create-task.dto';
@@ -35,9 +35,7 @@ export class TasksService {
             ]
           : undefined,
         dueDate: filters?.dueDate
-          ? {
-              equals: new Date(filters.dueDate),
-            }
+          ? { equals: new Date(filters.dueDate) }
           : undefined,
       },
       orderBy: { createdAt: 'desc' },
@@ -49,7 +47,7 @@ export class TasksService {
   // Create a new task for a specific user
   // The userId is required to associate the task with the user
   // The task data is provided in the data parameter
-  create(userId: number, dto: CreateTaskDto) {
+  create(userId: number, dto: CreateTaskDto): Promise<Task> {
     return this.prisma.task.create({
       data: {
         title: dto.title,
@@ -67,30 +65,78 @@ export class TasksService {
   //   UPDATE
 
   // Update an existing task by its ID
-  update(id: number, data: Prisma.TaskUpdateInput): Promise<Task> {
-    return this.prisma.task.update({
-      where: { id },
+  async update(
+    userId: number,
+    id: number,
+    data: Prisma.TaskUpdateInput,
+  ): Promise<Task> {
+    // thus function was updated to an async function to wait the response of prisma.
+    // Prisma response is needed to check if the user is the owner of the task before returning the updated task.
+    // ----------------------------------------------
+    // updateMany is used instead of update to be able to check the userId in the where clause
+    // and return the number of affected rows
+    const result = await this.prisma.task.updateMany({
+      where: { id, userId },
       data,
+    });
+
+    // If the user is not the owner or is not auth the exception is thrown
+    if (result.count === 0) {
+      throw new ForbiddenException('Task not found or access denied');
+    }
+
+    return this.prisma.task.findFirstOrThrow({
+      where: { id, userId },
     });
   }
 
   //   PATCH
 
   // Toggle the completion status of a task
-  toggleComplete(id: number, completed: boolean): Promise<Task> {
-    return this.prisma.task.update({
-      where: { id },
+  async toggleComplete(
+    userId: number,
+    id: number,
+    completed: boolean,
+  ): Promise<Task> {
+    // thus function was updated to an async function to wait the response of prisma.
+    // Prisma response is needed to check if the user is the owner of the task before returning the updated
+    // ----------------------------------------------
+    // updateMany is used instead of update to be able to check the userId in the where clause
+    // and return the number of affected rows
+    const result = await this.prisma.task.updateMany({
+      where: { id, userId },
       data: { completed },
+    });
+
+    // If the user is not the owner or is not auth the exception is thrown
+    if (result.count === 0) {
+      throw new ForbiddenException('Task not found or access denied');
+    }
+
+    return this.prisma.task.findFirstOrThrow({
+      where: { id, userId },
     });
   }
 
   //   DELETE
 
   // Delete a task by its ID
-  delete(id: number): Promise<Task> {
-    return this.prisma.task.delete({
-      where: { id },
+  async delete(userId: number, id: number): Promise<{ success: true }> {
+    // thus function was updated to an async function to wait the response of prisma.
+    // Prisma response is needed to check if the user is the owner of the task before returning the updated
+    // ----------------------------------------------
+    // deleteMany is used instead of delete to be able to check the userId in the where clause
+    // and return the number of affected rows
+    const result = await this.prisma.task.deleteMany({
+      where: { id, userId },
     });
+
+    // If the user is not the owner or is not auth the exception is thrown
+    if (result.count === 0) {
+      throw new ForbiddenException('Task not found or access denied');
+    }
+
+    return { success: true };
   }
 }
 
