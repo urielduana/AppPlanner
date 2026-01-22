@@ -70,11 +70,11 @@ export class TasksService {
     id: number,
     data: Prisma.TaskUpdateInput,
   ): Promise<Task> {
-    // thus function was updated to an async function to wait the response of prisma.
-    // Prisma response is needed to check if the user is the owner of the task before returning the updated task.
-    // ----------------------------------------------
-    // updateMany is used instead of update to be able to check the userId in the where clause
-    // and return the number of affected rows
+    // Standardize dates to avoid typing problems between back and frontend
+    if (typeof data.dueDate === 'string') {
+      data.dueDate = new Date(data.dueDate);
+    }
+
     const result = await this.prisma.task.updateMany({
       where: { id, userId },
       data,
@@ -98,11 +98,6 @@ export class TasksService {
     id: number,
     completed: boolean,
   ): Promise<Task> {
-    // thus function was updated to an async function to wait the response of prisma.
-    // Prisma response is needed to check if the user is the owner of the task before returning the updated
-    // ----------------------------------------------
-    // updateMany is used instead of update to be able to check the userId in the where clause
-    // and return the number of affected rows
     const result = await this.prisma.task.updateMany({
       where: { id, userId },
       data: { completed },

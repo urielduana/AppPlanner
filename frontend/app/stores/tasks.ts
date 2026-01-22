@@ -85,5 +85,30 @@ export const useTasksStore = defineStore("tasks", {
       // Removing the task from the state
       this.tasks = this.tasks.filter((t) => t.id !== id);
     },
+
+    // Update a task
+    async updateTask(
+      id: number,
+      data: {
+        title?: string;
+        description?: string;
+        category?: string;
+        dueDate?: string;
+      },
+    ) {
+      const config = useRuntimeConfig();
+      // Making a PUT request to update the task - Axios
+      const response = await axios.put(
+        `${config.public.apiBase}/tasks/${id}`,
+        data,
+      );
+
+      const index = this.tasks.findIndex((t) => t.id === id);
+
+      // Updating the task in the state
+      if (index !== -1) {
+        this.tasks[index] = response.data;
+      }
+    },
   },
 });
