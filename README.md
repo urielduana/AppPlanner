@@ -85,6 +85,13 @@ This is a complete task management application featuring advanced authentication
 
 ---
 
+### Test User
+
+For quick testing, you can use the following credentials:
+
+- **Email**: `admin@admin.com`
+- **Password**: `admin123`
+
 ## License / Licencia
 
 MIT
