@@ -74,7 +74,7 @@ const cancelEdit = () => {
 
         <!-- EDIT MODE -->
         <div v-else>
-          <input v-model="editForm.title" placeholder="Title" />
+          <input v-model="editForm.title" placeholder="Title" required />
           <textarea v-model="editForm.description" placeholder="Description" />
           <input type="date" v-model="editForm.dueDate" />
           <input v-model="editForm.category" placeholder="Category" />
