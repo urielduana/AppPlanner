@@ -7,6 +7,7 @@ type Option = {
 defineProps<{
   modelValue: Option["value"];
   options: Option[];
+  placeholder?: string;
 }>();
 
 defineEmits<{
@@ -26,6 +27,7 @@ defineEmits<{
       )
     "
     class="border rounded p-2 w-full"
+    :placeholder="placeholder"
   >
     <option
       v-for="opt in options"

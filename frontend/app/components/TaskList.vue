@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTasksStore, type Task } from "~/stores/tasks";
 import UiInput from "./ui/UiInput.vue";
+import UiCheckbox from "./ui/UiCheckbox.vue";
 
 const statusOptions = [
   { label: "All", value: null },
@@ -64,6 +65,12 @@ watch(
     }, 400);
   },
 );
+
+const resetFilters = () => {
+  tasks.filters.search = "";
+  tasks.filters.category = "";
+  tasks.filters.completed = "";
+};
 </script>
 
 <template>
@@ -77,6 +84,12 @@ watch(
       <UiSelect v-model="tasks.filters.completed" :options="statusOptions" />
 
       <UiInput v-model="tasks.filters.category" placeholder="Category" />
+    </div>
+    <!-- Reset filters -->
+    <div class="flex justify-end">
+      <UiButton @click="resetFilters" variant="danger">
+        Reset Filters
+      </UiButton>
     </div>
 
     <!-- States -->
