@@ -71,5 +71,6 @@ This trade-off was intentional and documented.
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev
 ```

@@ -53,20 +53,7 @@ This is a complete task management application featuring advanced authentication
    npm install
    ```
 
-3. Set up environment variables:
-   Copy `.env.example` to `.env` and configure your database URL and JWT secret.
-
-   ```bash
-   cp .env.example .env
-   ```
-
-4. Run database migrations:
-
-   ```bash
-   npx prisma migrate dev
-   ```
-
-5. Start the backend server:
+3. Start the backend server:
    ```bash
    npm run start:dev
    ```
@@ -85,7 +72,13 @@ This is a complete task management application featuring advanced authentication
    npm install
    ```
 
-3. Start the development server:
+3. Set up environment variables:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+4. Start the development server:
    ```bash
    npm run dev
    ```
