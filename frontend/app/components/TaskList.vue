@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTasksStore, type Task } from "~/stores/tasks";
+import UiInput from "./ui/UiInput.vue";
 
 const tasks = useTasksStore();
 
@@ -67,7 +68,7 @@ watch(
 
     <div class="flex gap-2 mb-4">
       <!-- Search -->
-      <input
+      <UiInput
         v-model="tasks.filters.search"
         placeholder="Search tasks by title..."
         class="border p-2"
@@ -85,7 +86,7 @@ watch(
       </select>
 
       <!-- Category -->
-      <input
+      <UiInput
         v-model="tasks.filters.category"
         placeholder="Category"
         class="border p-2"

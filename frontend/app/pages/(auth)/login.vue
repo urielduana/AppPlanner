@@ -17,6 +17,7 @@ const password = ref("");
 const submit = async () => {
   await auth.login(email.value, password.value);
   navigateTo("/dashboard");
+  reloadNuxtApp();
 };
 </script>
 
@@ -25,24 +26,18 @@ const submit = async () => {
     <div class="min-h-screen flex items-center justify-center">
       <form @submit.prevent="submit" class="space-y-4 w-80">
         <h1 class="text-2xl mb-4 text-center">Login</h1>
-        <input
-          v-model="email"
-          placeholder="Email"
-          class="border p-2 w-full border-slate-600"
-        />
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Password"
-          class="border p-2 w-full border-slate-600"
-        />
+        <UiInput v-model="email" type="email" placeholder="Email" />
+
+        <UiInput v-model="password" type="password" placeholder="Password" />
+
         <div>
           If you don't have an account, please
           <NuxtLink to="/register" class="text-blue-600 underline"
             >register here</NuxtLink
           >.
         </div>
-        <button class="bg-slate-800 text-white w-full p-2">Login</button>
+
+        <UiButton type="submit" variant="primary">Login</UiButton>
       </form>
     </div>
   </div>

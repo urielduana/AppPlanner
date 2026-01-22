@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import UiButton from "./ui/UiButton.vue";
+import UiInput from "./ui/UiInput.vue";
+
 const tasks = useTasksStore();
 
 // Form variables
@@ -33,13 +36,13 @@ const submit = async () => {
 <template>
   <div>
     <form @submit.prevent="submit">
-      <input type="text" v-model="title" placeholder="Title" required />
-      <textarea v-model="description" placeholder="Description" />
-      <input type="text" v-model="category" placeholder="Category" />
-      <input type="date" v-model="dueDate" placeholder="Due Date" />
-      <button type="submit" :disabled="loading">
+      <UiInput type="text" v-model="title" placeholder="Title" required />
+      <UiTextarea v-model="description" placeholder="Description" />
+      <UiInput type="text" v-model="category" placeholder="Category" />
+      <UiInput type="date" v-model="dueDate" placeholder="Due Date" />
+      <UiButton type="submit" :disabled="loading" variant="primary">
         {{ loading ? "Creating..." : "Add Task" }}
-      </button>
+      </UiButton>
     </form>
   </div>
 </template>
