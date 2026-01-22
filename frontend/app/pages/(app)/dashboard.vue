@@ -7,14 +7,17 @@ definePageMeta({
 
 const tasks = useTasksStore();
 
+// When view is mounted, fetch tasks
 onMounted(() => {
   tasks.fetchTasks();
-  console.log(tasks.tasks);
 });
 </script>
 
 <template>
   <div>
+    <div>
+      <TaskForm />
+    </div>
     <div>
       <h1>My Tasks</h1>
 
@@ -31,6 +34,9 @@ onMounted(() => {
             />
             <span ">
               {{ task.title }}
+              {{  task.description }}
+              {{ task.dueDate }}
+              {{ task.createdAt }}
             </span>
           </label>
 
