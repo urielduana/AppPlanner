@@ -34,15 +34,21 @@ const submit = async () => {
 </script>
 
 <template>
-  <div>
-    <form @submit.prevent="submit">
-      <UiInput type="text" v-model="title" placeholder="Title" required />
-      <UiTextarea v-model="description" placeholder="Description" />
-      <UiInput type="text" v-model="category" placeholder="Category" />
-      <UiInput type="date" v-model="dueDate" placeholder="Due Date" />
-      <UiButton type="submit" :disabled="loading" variant="primary">
-        {{ loading ? "Creating..." : "Add Task" }}
-      </UiButton>
-    </form>
-  </div>
+  <form @submit.prevent="submit" class="space-y-4">
+    <h2 class="text-lg font-semibold">New Task</h2>
+
+    <UiInput v-model="title" placeholder="Title" required />
+    <UiTextarea v-model="description" placeholder="Description" />
+    <UiInput v-model="category" placeholder="Category" />
+    <UiInput type="date" v-model="dueDate" />
+
+    <UiButton
+      type="submit"
+      :disabled="loading"
+      variant="primary"
+      class="w-full"
+    >
+      {{ loading ? "Creating..." : "Add Task" }}
+    </UiButton>
+  </form>
 </template>

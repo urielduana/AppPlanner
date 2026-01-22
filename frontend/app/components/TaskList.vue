@@ -2,6 +2,12 @@
 import { useTasksStore, type Task } from "~/stores/tasks";
 import UiInput from "./ui/UiInput.vue";
 
+const statusOptions = [
+  { label: "All", value: null },
+  { label: "Pending", value: false },
+  { label: "Completed", value: true },
+];
+
 const tasks = useTasksStore();
 
 // When view is mounted, fetch tasks
@@ -49,7 +55,8 @@ const cancelEdit = () => {
 let searchTimeout: number | null = null;
 
 watch(
-  () => tasks.filters.search || tasks.filters.category,
+  () =>
+    tasks.filters.search || tasks.filters.category || tasks.filters.completed,
   () => {
     if (searchTimeout) clearTimeout(searchTimeout);
     searchTimeout = window.setTimeout(() => {
@@ -60,74 +67,69 @@ watch(
 </script>
 
 <template>
-  <div>
-    <h1>My Tasks</h1>
+  <div class="space-y-4">
+    <h2 class="text-lg font-semibold">My Tasks</h2>
 
-    <div v-if="tasks.loading">Loading...</div>
-    <div v-if="tasks.error">{{ tasks.error }}</div>
+    <!-- Filters -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+      <UiInput v-model="tasks.filters.search" placeholder="Search..." />
 
-    <div class="flex gap-2 mb-4">
-      <!-- Search -->
-      <UiInput
-        v-model="tasks.filters.search"
-        placeholder="Search tasks by title..."
-        class="border p-2"
-      />
+      <UiSelect v-model="tasks.filters.completed" :options="statusOptions" />
 
-      <!-- Status -->
-      <select
-        v-model="tasks.filters.completed"
-        @change="tasks.fetchTasks"
-        class="border p-2"
-      >
-        <option value="">All</option>
-        <option value="false">Pending</option>
-        <option value="true">Completed</option>
-      </select>
-
-      <!-- Category -->
-      <UiInput
-        v-model="tasks.filters.category"
-        placeholder="Category"
-        class="border p-2"
-      />
+      <UiInput v-model="tasks.filters.category" placeholder="Category" />
     </div>
-    <ul>
-      <li v-for="task in tasks.tasks" :key="task.id">
-        <!-- VIEW MODE -->
-        <div v-if="editingId !== task.id">
-          <label>
+
+    <!-- States -->
+    <div v-if="tasks.loading">Loading...</div>
+    <div v-if="tasks.error" class="text-red-500">{{ tasks.error }}</div>
+
+    <!-- List -->
+    <div
+      v-for="task in tasks.tasks"
+      :key="task.id"
+      class="border rounded p-4 bg-white"
+    >
+      <div v-if="editingId !== task.id" class="flex justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
             <input
               type="checkbox"
               :checked="task.completed"
               @change="tasks.toggleTask(task.id, !task.completed)"
             />
-
             <strong>{{ task.title }}</strong>
-            <p>{{ task.description }}</p>
-            <small>{{ task.dueDate }}</small>
-          </label>
+          </div>
 
-          <button @click="startEditing(task)">Edit</button>
-          <button @click="tasks.deleteTask(task.id)">Delete</button>
+          <p class="text-sm text-slate-600">{{ task.description }}</p>
+          <p class="text-xs text-slate-400">{{ task.dueDate }}</p>
         </div>
 
-        <!-- EDIT MODE -->
-        <div v-else>
-          <input v-model="editForm.title" placeholder="Title" required />
-          <textarea v-model="editForm.description" placeholder="Description" />
-          <input type="date" v-model="editForm.dueDate" />
-          <input v-model="editForm.category" placeholder="Category" />
-
-          <label>
-            <input type="checkbox" v-model="editForm.completed" />
-            Completed
-          </label>
-
-          <button @click="saveEdit(task.id)">Save</button>
-          <button @click="cancelEdit">Cancel</button>
+        <div class="flex gap-2">
+          <UiButton size="sm" @click="startEditing(task)">Edit</UiButton>
+          <UiButton
+            size="sm"
+            variant="danger"
+            @click="tasks.deleteTask(task.id)"
+          >
+            Delete
+          </UiButton>
         </div>
-      </li>
-    </ul>
+      </div>
+
+      <!-- Edit -->
+      <div v-else class="space-y-2">
+        <UiInput v-model="editForm.title" />
+        <UiTextarea v-model="editForm.description" />
+        <UiInput type="date" v-model="editForm.dueDate" />
+        <UiInput v-model="editForm.category" />
+
+        <div class="flex gap-2">
+          <UiButton size="sm" @click="saveEdit(task.id)">Save</UiButton>
+          <UiButton size="sm" variant="secondary" @click="cancelEdit">
+            Cancel
+          </UiButton>
+        </div>
+      </div>
+    </div>
   </div>
 </template>

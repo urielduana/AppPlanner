@@ -6,14 +6,17 @@ definePageMeta({
 </script>
 
 <template>
-  <div>
-    <div class="min-h-screen flex items-center justify-center">
-      <div>
-        <TaskForm />
-      </div>
-      <div>
+  <div class="min-h-screen p-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Task List -->
+      <UiCard class="md:col-span-2">
         <TaskList />
-      </div>
+      </UiCard>
+
+      <!-- Create Task -->
+      <UiCard class="md:col-span-1">
+        <TaskForm />
+      </UiCard>
     </div>
   </div>
 </template>
