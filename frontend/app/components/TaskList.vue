@@ -43,6 +43,19 @@ const saveEdit = async (taskId: number) => {
 const cancelEdit = () => {
   editingId.value = null;
 };
+
+// Filter
+let searchTimeout: number | null = null;
+
+watch(
+  () => tasks.filters.search || tasks.filters.category,
+  () => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    searchTimeout = window.setTimeout(() => {
+      tasks.fetchTasks();
+    }, 400);
+  },
+);
 </script>
 
 <template>
@@ -52,6 +65,32 @@ const cancelEdit = () => {
     <div v-if="tasks.loading">Loading...</div>
     <div v-if="tasks.error">{{ tasks.error }}</div>
 
+    <div class="flex gap-2 mb-4">
+      <!-- Search -->
+      <input
+        v-model="tasks.filters.search"
+        placeholder="Search tasks by title..."
+        class="border p-2"
+      />
+
+      <!-- Status -->
+      <select
+        v-model="tasks.filters.completed"
+        @change="tasks.fetchTasks"
+        class="border p-2"
+      >
+        <option value="">All</option>
+        <option value="false">Pending</option>
+        <option value="true">Completed</option>
+      </select>
+
+      <!-- Category -->
+      <input
+        v-model="tasks.filters.category"
+        placeholder="Category"
+        class="border p-2"
+      />
+    </div>
     <ul>
       <li v-for="task in tasks.tasks" :key="task.id">
         <!-- VIEW MODE -->

@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -32,8 +33,8 @@ export class TasksController {
 
   //   READ - AUTHENTICATED
   @Get()
-  getTasks(@Req() req: AuthRequest) {
-    return this.tasks.findAll(req.user.userId);
+  getTasks(@Req() req: AuthRequest, @Query() filters: any) {
+    return this.tasks.findAll(req.user.userId, filters);
   }
 
   //   UPDATE - AUTHENTICATED

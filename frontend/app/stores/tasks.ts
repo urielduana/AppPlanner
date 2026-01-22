@@ -19,6 +19,12 @@ export const useTasksStore = defineStore("tasks", {
     loading: false,
     // error - Error message
     error: null as string | null,
+    // filters
+    filters: {
+      completed: "" as "" | "true" | "false",
+      category: "",
+      search: "",
+    },
   }),
 
   getters: {
@@ -35,7 +41,13 @@ export const useTasksStore = defineStore("tasks", {
       try {
         const config = useRuntimeConfig();
         // Making a GET request to fetch tasks - Axios
-        const response = await axios.get(`${config.public.apiBase}/tasks`);
+        const response = await axios.get(`${config.public.apiBase}/tasks`, {
+          params: {
+            completed: this.filters.completed ?? undefined,
+            category: this.filters.category || undefined,
+            search: this.filters.search || undefined,
+          },
+        });
         // Storing the fetched tasks in the state
         this.tasks = response.data;
       } catch {

@@ -17,26 +17,41 @@ export class TasksService {
   findAll(
     userId: number,
     filters?: {
-      completed?: boolean;
+      completed?: any;
       category?: string;
       search?: string;
       dueDate?: string;
     },
   ): Promise<Task[]> {
+    const completed =
+      filters?.completed === 'true'
+        ? true
+        : filters?.completed === 'false'
+          ? false
+          : undefined;
+
     return this.prisma.task.findMany({
       where: {
         userId,
-        completed: filters?.completed,
-        category: filters?.category,
-        OR: filters?.search
-          ? [
-              { title: { contains: filters.search } },
-              { description: { contains: filters.search } },
-            ]
-          : undefined,
-        dueDate: filters?.dueDate
-          ? { equals: new Date(filters.dueDate) }
-          : undefined,
+
+        ...(completed !== undefined && { completed }),
+
+        ...(filters?.category && {
+          category: filters.category,
+        }),
+
+        ...(filters?.search && {
+          OR: [
+            { title: { contains: filters.search } },
+            { description: { contains: filters.search } },
+          ],
+        }),
+
+        ...(filters?.dueDate && {
+          dueDate: {
+            equals: new Date(filters.dueDate),
+          },
+        }),
       },
       orderBy: { createdAt: 'desc' },
     });
