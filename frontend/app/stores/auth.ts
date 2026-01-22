@@ -85,5 +85,32 @@ export const useAuthStore = defineStore("auth", {
         email: payload.email,
       };
     },
+
+    async register(name: string, email: string, password: string) {
+      this.loading = true;
+      try {
+        const config = useRuntimeConfig();
+
+        // Making a POST request to the register endpoint
+        const response = await axios.post(
+          `${config.public.apiBase}/auth/register`,
+          { name, email, password },
+        );
+
+        const token = response.data.access_token;
+
+        if (!token) {
+          throw new Error("Invalid token");
+        }
+
+        this.token = token;
+        this.user = this.decodeToken(token);
+
+        axios.defaults.headers.common.Authorization = `Bearer ${this.token}`;
+        localStorage.setItem("auth_token", token);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 });

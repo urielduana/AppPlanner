@@ -23,7 +23,6 @@ const submit = async () => {
 <template>
   <div>
     <div class="min-h-screen flex items-center justify-center">
-      <div></div>
       <form @submit.prevent="submit" class="space-y-4 w-80">
         <h1 class="text-2xl mb-4 text-center">Login</h1>
         <input
